@@ -1,2 +1,2 @@
 var httpserver = require("./httpserver");
-httpserver.start();
+httpserver.alias();

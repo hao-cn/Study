@@ -39,7 +39,7 @@ c. 结束代码，有些代码在执行完成后就会自动退出（如：hw.js
 	kill -9 processID
 ```
 下图展示了上述的3个步骤
-![基本流程](QQ20160305-1.png)
+![基本流程](figures/QQ20160305-1.png)
 
 
 ### 匿名函数
@@ -88,6 +88,68 @@ http.createServer(function(request, response) {
 console.log("server started");
 ```
 如下图所示，在服务器启动后，我们访问了127.0.0.1:8888三次，每次匿名函数都会被调用，并进行计数
-![访问计数](QQ20160306-0.png)
+![访问计数](figures/QQ20160306-0.png)
 
 ### 导出模块
+为了将代码更好的组织，我们需要将代码按其功能进行组织，分别放在不同的文件中，那么分到不同的文件中之后，我们该如何使用呢？这时候就需要“导出模块”了!
+
+将前面提到的代码中的，创建服务器的代码抽取出来构成如下代码：
+
+```
+//httpserver.js
+var http = require("http");
+
+function start() {
+	var visit_count = 0; //count the number of visitors (PV)
+	console.log("Simple http server started at 8888");
+	
+	http.createServer(function(request, response) {
+	  visit_count ++;
+	  console.log("accepted a request! count:" + visit_count);  // show this message at terminal when one visit 127.0.0.1:8888
+	  response.writeHead(200, {"Content-Type": "text/plain"});
+	  response.write("Hello World");
+	  response.end();
+	}).listen(8888);
+
+	console.log("server started");
+}
+
+exports.start = start; // export the start function 
+```
+
+将创建的执行抽取代码如下：
+
+```
+//httpservertest.js
+var httpserver = require("./httpserver");
+httpserver.start();
+```
+
+其中
+```
+exports.start = start;
+```
+表面将代码中的start对象赋给exports对象的start，若将这行代码注释掉，那么会提示错误，表示在httpserver中找不到start方法。
+![undefined function](figures/QQ20160307-0.png)
+注意，exports的语法为：
+```
+exports.call_name = local_variable_name
+```
+call_name：在使用包的时候调用的方法；local_variable_name：局部的需要被导出，以供外部使用的方法的本地名字。
+即，若我们将httpserver.js修改如下其中
+
+```
+exports.alias = start;
+```
+那么，在httpservertest.js中，我们修改调用的名称，代码就可正常运行。
+
+```
+//httpservertest.js
+var httpserver = require("./httpserver");
+httpserver.alias();
+```
+
+### 请求路由
+
+
+

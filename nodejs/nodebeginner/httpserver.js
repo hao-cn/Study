@@ -15,4 +15,4 @@ function start() {
 	console.log("server started");
 }
 
-exports.start = start; // export the start function 
+exports.alias = start; // export the start function 
