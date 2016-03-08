@@ -200,6 +200,165 @@ var router = require("./easy_router");
 server.start(router.route);
 
 ```
+下图展示了上述代码的执行。
+![路由Demo](figures/QQ20160307-1.png)
+
+### 从路由到处理模块
+在上一小节的基础上，真正的对请求进行路由
+代码分成5个文件
+
++ easy_router.js 路由处理
++ factory.js 将路由处理封装到一起
++ handle.js 具体的路由处理逻辑
++ rhstest.js app的入口
++ router_http_server.js 服务器
+
+相对于上一节的代码，修改如下：
+
+首先，实习路由的具体逻辑：
+
+```
+//handle.js
+function start(){
+    console.log("Request handler 'start' was called.");
+}
+
+function end(){
+    console.log("Request handler 'end' was called.");
+}
+
+function others(){
+    console.log("Request handler 'others' was called.");
+}
+
+exports.start = start;
+exports.end = end;
+exports.others = others;
+```
+在这段代码中，我们共对三种实现了3中处理方法，并通过exports将其暴露。
+
+然后，我们将这些暴露出去的集合在一起
+
+```
+//factory.js
+var handle = require("./handle");
+var factory = {};
+factory["/start"] = handle.start;
+factory["/end"] = handle.upload;
+factory["/others"] = handle.others;
+exports.factory = factory;
+```
+
+其实这段代码可以集成到handle.js里面（即，将handle.js和factory.js合并）
+
+```
+//handle.js
+function start(){
+    console.log("Request handler 'start' was called.");
+}
+
+function end(){
+    console.log("Request handler 'end' was called.");
+}
+
+function others(){
+    console.log("Request handler 'others' was called.");
+}
+
+var factory = {};
+factory["/start"] = start;
+factory["/end"] = upload;
+factory["/others"] = others;
+
+exports. factory = factory;
+```
+当然，如果要用这个合并的版本，那么rhstes.js中的factory的来源也要做相应的修改。
+
+现在，修改路由分配模块的代码
+
+```
+//easy_router.js
+function route(pathname,factory) {
+	console.log("About to route a request for " + pathname);
+	if (typeof factory[pathname] === 'function') {
+    	factory[pathname]();
+  	} else {
+    	console.log("No request handler found for " + pathname);
+  	}
+}
+exports.route = route;
+```
+其中，我们使用
+```
+typeof factory[pathname] === 'function'
+```
+来判断传人的参数是否是一个路由处理函数。然后，使用
+```
+factory[pathname]();
+```来调用对应的路由处理代码，并且通过else保证了出现意料之外的地址请求的时候也能处理。
+
+接下来，是服务器代码：
+
+```
+//router_http_server.js
+var http = require("http");
+var url = require("url");
+
+function start(route,factory) {
+  function onRequest(request, response) {
+    var pathname = url.parse(request.url).pathname;
+    console.log("Request for " + pathname + " received.");
+
+    route(pathname, factory);
+
+    response.writeHead(200, {"Content-Type": "text/plain"});
+    response.write("Hello World");
+    response.end();
+  }
+
+  http.createServer(onRequest).listen(8888);
+  console.log("Server has started.");
+}
+
+exports.start = start;
+```
+与以前相比，就是调用route()的代码有一点改变，传入了新的参数---一个函数，一个路由处理函数。
+
+最后，我们写入口代码
+
+```
+//rtstest.js
+var server = require("./router_http_server");
+var router = require("./easy_router");
+var factory = require("./factory");
+
+server.start(router.route, factory.factory);
+```
+没啥说的，就start函数多了个参数。
+
+
+
+
+Tips:
+运行报错：
+
+```
+events.js:85
+      throw er; // Unhandled 'error' event
+            ^
+Error: listen EADDRINUSE
+    at exports._errnoException (util.js:746:11)
+    at Server._listen2 (net.js:1129:14)
+    at listen (net.js:1155:10)
+    at Server.listen (net.js:1240:5)
+```
+
+原因是，有不止一个nodejs进程在运行，使用命令```
+ps | grep node
+```
+找到对应的进程，kill them！
+
+
 
 
 
