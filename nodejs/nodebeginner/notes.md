@@ -358,7 +358,7 @@ ps | grep node
 ```
 找到对应的进程，kill them！
 
-### 对不太请求返还不同结果1
+### 对不同请求返还不同结果1
 相对于上一节的代码，修改3个文件
 
 + easy_router.js 修改：将handle.js中的返回值传到服务器中
@@ -423,8 +423,199 @@ function start(route,factory) {
 
 exports.start = start;    
 ```
+上述代码的执行结果如下图：
+![对不同请求返还不同结果1](figures/QQ20160309-0.png)
 
-### 
+
+### 不要在处理代码中写入阻塞逻辑
+若处理代码中有阻塞逻辑的代码，那么请求就无法并发的执行，即某一个请求在执行的时候，导致其他的全部逻辑都不能执行。
+
+验证代码，只需要修改handle.js
+
+```
+//handle.js
+function start(){
+    console.log("Request handler 'start' was called.");
+    sleep(10000);
+    return "The respond for start";
+}
+
+function end(){
+    console.log("Request handler 'end' was called.");
+    return "The respond for end";
+}
+
+function others(){
+    console.log("Request handler 'others' was called.");
+    return "The respond for others";
+}
+
+function sleep(milliSeconds) {
+    var startTime = new Date().getTime();
+    while (new Date().getTime() < startTime + milliSeconds);
+}
+
+exports.start = start;
+exports.end = end;
+exports.others = others;
+```
+上述代码中，增加了一个方法sleep()，即让进程休眠一段时间.
+这样的胡，若先访问http://127.0.0.1:8888/start，然后访问http://127.0.0.1:8888/end的话，那么会出现2个请求都在10s之后返回。
+
+这是由于第一个访问中的start请求的调用方式是线性的，本身无法并发，其执行sleep操作的时候，让整个线程都只有sleep，只有线程结束后才能进行监听其他请求。
+
+所以，<b>如果要让尽可能的使用非阻塞方式！！即，尽可能使用回调函数！！</b>
+
+首先，我们需要引入一个异步执行函数：
+```
+exec
+```
+其可以让代码继续执行，而不阻塞在此。同样修改handle.js
+
+```
+//handle.js
+var exec = require("child_process").exec;
+
+function start(){
+    console.log("Request handler 'start' was called.");
+    sleep(10000);
+    return "The respond for start";
+}
+
+function end(){
+    console.log("Request handler 'end' was called.");
+    var content = "empty";
+    exec("ls -lah", function (error, stdout, stderr) {
+    	content = stdout;
+  	});
+    return "The respond for end and content is: " + content;
+}
+
+function others(){
+    console.log("Request handler 'others' was called.");
+    return "The respond for others";
+}
+
+function sleep(milliSeconds) {
+    var startTime = new Date().getTime();
+    while (new Date().getTime() < startTime + milliSeconds);
+}
+
+exports.start = start;
+exports.end = end;
+exports.others = others;
+```
+上面end的处理与start的处理一样都会执行一个操作，然后再返回，但是调用end就不会产生阻塞。
+
+但是这段代码有产生另外一个问题，那就是调用end之后，还没得到其执行代码产生的返回值，服务器就已经返回结果了。也就是说其返回的结果是错误的。
+
+显然，我们应该将服务器的返回的代码，放入回调函数的处理代码块中，即等代码执行完后调用写服务器的返回代码。因此，需要修噶如下文件：
+
++ router_http_server.js
++ easy_route.js
++ handle.js
+
+
+```
+//router_http_server.js
+var http = require("http");
+var url = require("url");
+
+function start(route,factory) {
+  function onRequest(request, response) {
+    var pathname = url.parse(request.url).pathname;
+    console.log("Request for " + pathname + " received.");
+
+    route(pathname, factory, response);
+  }
+
+  http.createServer(onRequest).listen(8888);
+  console.log("Server has started.");
+}
+
+exports.start = start;    
+```
+主要修改在于将response传人路由处理逻辑中。
+
+```
+//easy_router.js
+function route(pathname,factory,response) {
+	if (typeof factory[pathname] === 'function') {
+    	factory[pathname](response);
+  	} else {
+  		response.writeHead(200, {"Content-Type": "text/plain"});
+	    response.write("404 not found!");
+	    response.end();
+  	}
+}
+exports.route = route;
+```
+主要改变在于取消了返回值，将response传人处理逻辑中，待逻辑完成后，各自去写返回。
+
+```
+//handle.js
+var exec = require("child_process").exec;
+
+function start(response){
+    console.log("Request handler 'start' was called.");
+    sleep(10000);
+    response.writeHead(200, {"Content-Type": "text/plain"});
+    response.write("The respond for start");
+    response.end();
+}
+
+function end(response){
+    console.log("Request handler 'end' was called.");
+    var content = "empty";
+    exec("ls -lah", function (error, stdout, stderr) {
+    	content = stdout;
+  	});
+    response.writeHead(200, {"Content-Type": "text/plain"});
+    response.write("The respond for end and content is: " + content);
+    response.end();
+}
+
+function others(response){
+    console.log("Request handler 'others' was called.");
+    var content = "empty";
+    exec("ls -lah", function (error, stdout, stderr) {
+        content = stdout;
+        response.writeHead(200, {"Content-Type": "text/plain"});
+        response.write("The respond for others and content is: " + content);
+        response.end();
+    });
+}
+
+function sleep(milliSeconds) {
+    var startTime = new Date().getTime();
+    while (new Date().getTime() < startTime + milliSeconds);
+}
+
+exports.start = start;
+exports.end = end;
+exports.others = others;
+```
+主要修改在于，各个处理模块自己写response。对于end和others，others的写response逻辑是在回调函数中写，而end不是，导致，其返回值是不一样的，others的写法才是我们想要的。它们的返回值如下：
+
++ others的返回值
+
+```
+The respond for others and content is: total 48
+drwxr-xr-x   7 hyang  staff   238B Mar  9 21:00 .
+drwxr-xr-x  13 hyang  staff   442B Mar  9 20:59 ..
+-rw-r--r--   1 hyang  staff   289B Mar  9 21:01 easy_router.js
+-rw-r--r--   1 hyang  staff   180B Mar  9 21:00 factory.js
+-rw-r--r--   1 hyang  staff   1.2K Mar  9 21:03 handle.js
+-rw-r--r--   1 hyang  staff   166B Mar  9 21:00 rhstest.js
+-rw-r--r--@  1 hyang  staff   398B Mar  9 21:00 router_http_server.js
+```
+
++ end的返回值
+
+```
+The respond for end and content is: empty
+```
+
 
 
 
