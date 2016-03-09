@@ -267,7 +267,7 @@ function others(){
 
 var factory = {};
 factory["/start"] = start;
-factory["/end"] = upload;
+factory["/end"] = end;
 factory["/others"] = others;
 
 exports. factory = factory;
@@ -358,6 +358,73 @@ ps | grep node
 ```
 找到对应的进程，kill them！
 
+### 对不太请求返还不同结果1
+相对于上一节的代码，修改3个文件
+
++ easy_router.js 修改：将handle.js中的返回值传到服务器中
++ handle.js 修改：需要在路由处理中加入不同的返回值
++ router_http_server.js 修改：将handle.js中返回的不同结果写入response中
+
+```
+//easy_router.js 
+function route(pathname,factory) {
+	if (typeof factory[pathname] === 'function') {
+    	return factory[pathname](); //返回结果
+  	} else {
+    	return "404 not found!"; //返回结果
+  	}
+}
+
+exports.route = route;
+```
+
+```
+//handle.js
+function start(){
+    console.log("Request handler 'start' was called.");
+    return "The respond for start"; //对不同请求，返回不同结果
+}
+
+function end(){
+    console.log("Request handler 'end' was called.");
+    return "The respond for end"; //对不同请求，返回不同结果
+}
+
+function others(){
+    console.log("Request handler 'others' was called.");
+    return "The respond for others"; //对不同请求，返回不同结果
+}
+
+exports.start = start;
+exports.end = end;
+exports.others = others;
+```
+
+```
+//router_http_server.js
+var http = require("http");
+var url = require("url");
+
+function start(route,factory) {
+  function onRequest(request, response) {
+    var pathname = url.parse(request.url).pathname;
+    console.log("Request for " + pathname + " received.");
+
+    var content = route(pathname, factory); //得到不同的结果
+
+    response.writeHead(200, {"Content-Type": "text/plain"});
+    response.write(content); //将结果写入response
+    response.end();
+  }
+
+  http.createServer(onRequest).listen(8888);
+  console.log("Server has started.");
+}
+
+exports.start = start;    
+```
+
+### 
 
 
 
