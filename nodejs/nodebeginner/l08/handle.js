@@ -1,6 +1,7 @@
+var querystring = require("querystring");
 var exec = require("child_process").exec;
 
-function start(response){
+function start(response,postData){
     console.log("Request handler 'start' was called.");
     sleep(10000);
     response.writeHead(200, {"Content-Type": "text/plain"});
@@ -8,7 +9,7 @@ function start(response){
     response.end();
 }
 
-function end(response){
+function end(response,postData){
     console.log("Request handler 'end' was called.");
     var content = "empty";
     exec("ls -lah", function (error, stdout, stderr) {
@@ -19,7 +20,7 @@ function end(response){
     response.end();
 }
 
-function others(response){
+function others(response,postData){
     console.log("Request handler 'others' was called.");
     var content = "empty";
     exec("ls -lah", function (error, stdout, stderr) {
@@ -30,7 +31,7 @@ function others(response){
     });
 }
 
-function body(response){
+function body(response,postData){
     console.log("Request handler 'body' was called.");
     
     var body = '<html>'+
@@ -51,10 +52,10 @@ function body(response){
     response.end();
 }
 
-function upload(response){
+function upload(response,postData){
     console.log("Request handler 'upload' was called.");
     response.writeHead(200, {"Content-Type": "text/plain"});
-    response.write("A upload request");
+    response.write("You've sent the text: " + querystring.parse(postData).text);
     response.end();
 }
 
@@ -68,6 +69,7 @@ exports.start = start;
 exports.end = end;
 exports.others = others;
 exports.body = body;
+exports.upload = upload;
 
 
 
