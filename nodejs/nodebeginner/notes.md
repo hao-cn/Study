@@ -211,7 +211,7 @@ server.start(router.route);
 + factory.js 将路由处理封装到一起
 + handle.js 具体的路由处理逻辑
 + rhstest.js app的入口
-+ router_http_server.js 服务器
++ router\_http\_server.js 服务器
 
 相对于上一节的代码，修改如下：
 
@@ -363,7 +363,7 @@ ps | grep node
 
 + easy_router.js 修改：将handle.js中的返回值传到服务器中
 + handle.js 修改：需要在路由处理中加入不同的返回值
-+ router_http_server.js 修改：将handle.js中返回的不同结果写入response中
++ router\_http\_server.js 修改：将handle.js中返回的不同结果写入response中
 
 ```
 //easy_router.js 
@@ -511,7 +511,7 @@ exports.others = others;
 
 显然，我们应该将服务器的返回的代码，放入回调函数的处理代码块中，即等代码执行完后调用写服务器的返回代码。因此，需要修噶如下文件：
 
-+ router_http_server.js
++ router\_http\_server.js
 + easy_route.js
 + handle.js
 
@@ -617,6 +617,13 @@ The respond for end and content is: empty
 ```
 
 ### 处理Post请求
+简化起见：我们将router\_http\_server.js变成了server.js，easy_router.js变成了router.js
+
+在以往的代码中加入post请求。
+
+首先，我们需要构建一个有post请求的页面，并且添加一个接受post请求后的页面。我们分别将其叫做body和upload，其中body是一个文本框以及对应的post请求的页面，而upload是处理上传后的信息。
+
+为此，我们需要修改handle.js和
 
 
 
