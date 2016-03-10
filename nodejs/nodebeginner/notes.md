@@ -623,7 +623,143 @@ The respond for end and content is: empty
 
 首先，我们需要构建一个有post请求的页面，并且添加一个接受post请求后的页面。我们分别将其叫做body和upload，其中body是一个文本框以及对应的post请求的页面，而upload是处理上传后的信息。
 
-为此，我们需要修改handle.js和
+并且，我们需要把posData（即post传入的数据传到handle层来）。
+
+为此，我们需要修改handle.js和factory.js
+
+```
+//handle.js
+var querystring = require("querystring");//用于解析post传人的数据
+
+//body页面
+function body(response,postData){
+    console.log("Request handler 'body' was called.");
+    
+    var body = '<html>'+
+    '<head>'+
+    '<meta http-equiv="Content-Type" content="text/html; '+
+    'charset=UTF-8" />'+
+    '</head>'+
+    '<body>'+
+    '<form action="/upload" method="post">'+
+    '<textarea name="text" rows="20" cols="60"></textarea>'+
+    '<input type="submit" value="Submit text" />'+
+    '</form>'+
+    '</body>'+
+    '</html>';//构成html页面
+
+    response.writeHead(200, {"Content-Type": "text/html"});//类型要改成html
+    response.write(body);
+    response.end();
+}
+
+function upload(response,postData){
+    console.log("Request handler 'upload' was called.");
+    response.writeHead(200, {"Content-Type": "text/plain"});
+    response.write("You've sent the text: " + querystring.parse(postData).text);//在页面上展示posData
+    response.end();
+}
+
+exports.body = body;
+exports.upload = upload;
+```
+
+```
+//factory.js
+var handle = require("./handle");
+
+var factory = {};
+factory["/start"] = handle.start;
+factory["/end"] = handle.end;
+factory["/others"] = handle.others;
+factory["/body"] = handle.body;
+factory["/upload"] = handle.upload;
+
+exports.factory = factory;
+```
+在factory.js中注册新的页面。
+
+现在，我们需要在server.js中接受posData并且传入handle中。
+首先介绍2个监听器：
+
+”
+这里采用非阻塞方式处理是明智的，因为POST请求一般都比较“重” —— 用户可能会输入大量的内容。用阻塞的方式处理大数据量的请求必然会导致用户操作的阻塞。
+
+为了使整个过程非阻塞，Node.js会将POST数据拆分成很多小的数据块，然后通过触发特定的事件，将这些小数据块传递给回调函数。这里的特定的事件有data事件（表示新的小数据块到达了）以及end事件（表示所有的数据都已经接收完毕）。
+
+我们需要告诉Node.js当这些事件触发的时候，回调哪些函数。怎么告诉呢？ 我们通过在request对象上注册监听器（listener） 来实现。这里的request对象是每次接收到HTTP请求时候，都会把该对象传递给onRequest回调函数。
+“
+
+```
+request.addListener("data", function(chunk) {
+  // called when a new chunk of data was received
+});
+
+request.addListener("end", function() {
+  // called when all chunks of data have been received
+});
+```
+
+然后，我们将这些监听器集成到server.js中，即
+
+```
+var http = require("http");
+var url = require("url");
+
+function start(route,factory) {
+  function onRequest(request, response) {
+    var pathname = url.parse(request.url).pathname;
+    console.log("Request for " + pathname + " received.");
+
+    var postData = "";
+
+    request.setEncoding("utf8"); //setting the encoding 
+    request.addListener("data", function(postDataChunk) {
+      postData += postDataChunk;
+      console.log("Received POST data chunk '"+
+      postDataChunk + "'.");
+    });// add listener, and this listener called when a new chunk of data was received
+	request.addListener("end", function() {
+	  route(pathname, factory, response, postData);
+	});// add listener, and this listener called when all chunk of data have been received
+  }
+
+  http.createServer(onRequest).listen(8888);
+  console.log("Server has started.");
+}
+
+exports.start = start;    
+```
+
+并且，在route.js中将其继续向下传递；
+
+```
+function route(pathname,factory,response,postData) {
+	if (typeof factory[pathname] === 'function') {
+    	factory[pathname](response,postData);//继续向下传递
+  	} else {
+	  	console.log("No request handler found for " + pathname);
+	    response.writeHead(404, {"Content-Type": "text/plain"});
+	    response.write("404 Not found");
+	    response.end();
+  	}
+}
+
+exports.route = route;
+```
+
+最终，访问效果
+
+访问页面：http://127.0.0.1:8888/body
+
+![http://127.0.0.1:8888/body](figures/QQ20160310-1.png)
+
+输入内容，然后点击提交，自动跳转到http://127.0.0.1:8888/upload
+
+![http://127.0.0.1:8888/upload](figures/QQ20160310-0.png)
+
+Terminal上的展示结果：
+![terminal](figures/QQ20160310-2.png)
 
 
 
