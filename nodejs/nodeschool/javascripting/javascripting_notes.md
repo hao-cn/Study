@@ -1,5 +1,8 @@
 # Notes of Javascripting in nodeschool
 
+
+This documents records the propose and code of challenge of the Javascripting project in nodeschool.
+
 ## Introduction
 Will, a simply case about Hello World in JS
 ```
@@ -212,8 +215,32 @@ function math(a1, a2, a3){
 console.log(math(53,61,67));
 ```
 
+## Scope
+The scope of variables.
+In order to finish the challenge, you should know something about the IIFE.
+
+<b>Challenge:</b>
+
+```
+var a = 1, b = 2, c = 3;  
+(function firstFunction(){  
+    var b = 5, c = 6;  
+    (function secondFunction(){  
+        var b = 8;  
+        (function thirdFunction(){  
+            var a = 7, c = 9;  
+            (function fourthFunction(){  
+                var a = 1, c = 8;  
+            })();  
+        })();
+        console.log("a: "+a+", b: "+b+", c: "+c);
+    })();  
+})();  
+```
 
 
+
+#END.
 
 
 
