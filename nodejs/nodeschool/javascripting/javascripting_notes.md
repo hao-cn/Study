@@ -162,18 +162,44 @@ for(var i = 0 ; i < pets.length ; i ++){
 console.log(pets);
 ```
 
-## Looping through arrays
-Combine loop operation and value access in array.
+## Object
+Create objects in js.
 
 <b>Challenge:</b>
 
 ```
-var pets = ['cat', 'dog', 'rat'];  
-for(var i = 0 ; i < pets.length ; i ++){
-	pets[i] = pets[i] + 's';
-}
-console.log(pets);
+var pizza = {  
+    toppings: ['cheese', 'sauce', 'pepperoni'],  
+    crust: 'deep dish',  
+    serves: 2  
+}; 
+console.log(pizza);
 ```
+
+## Object properties
+Access the properties of object.
+
+<b>Challenge:</b>
+
+```
+var food = {  
+    types: 'only pizza'  
+}; 
+console.log(food[types]);
+```
+
+## Object properties
+Access the properties of object.
+
+<b>Challenge:</b>
+
+```
+var food = {  
+    types: 'only pizza'  
+}; 
+console.log(food[types]);
+```
+
 
 
 
