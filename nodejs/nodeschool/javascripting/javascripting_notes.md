@@ -200,6 +200,18 @@ function eat(food){
 console.log(eat('bananas'));
 ```
 
+## Function arguments
+Define and call function with more than one arguments.
+
+<b>Challenge:</b>
+
+```
+function math(a1, a2, a3){
+	return a1 + a2 * a3;
+}
+console.log(math(53,61,67));
+```
+
 
 
 
