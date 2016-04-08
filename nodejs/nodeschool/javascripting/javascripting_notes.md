@@ -188,16 +188,16 @@ var food = {
 console.log(food[types]);
 ```
 
-## Object properties
-Access the properties of object.
+## Function
+Define a function and use it.
 
 <b>Challenge:</b>
 
 ```
-var food = {  
-    types: 'only pizza'  
-}; 
-console.log(food[types]);
+function eat(food){
+	return food + ' tasted really good.';
+}
+console.log(eat('bananas'));
 ```
 
 
