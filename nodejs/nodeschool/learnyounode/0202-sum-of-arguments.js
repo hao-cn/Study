@@ -1,6 +1,6 @@
 var sum = 0;
 var argv = process.argv;
 for(var i = 2 ; i < argv.length ; i ++){
-	sum += Number(argv[i]); // sum += argv[i]; // 
+	sum += Number(argv[i]); 
 }
 console.log(sum);

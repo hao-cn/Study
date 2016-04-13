@@ -3,6 +3,8 @@
 Learn the basics of node: asynchronous i/o, http.
 
 ## Hwllo World
+Write a program that prints the text "HELLO WORLD" to the console (stdout).  
+  
 Use log function.
 
 <b>Challenge:</b>
@@ -12,6 +14,8 @@ console.log("HELLO WORLD");
 ```
 
 ## Bady steps
+Write a program that accepts one or more numbers as command-line arguments and prints the sum of those numbers to the console (stdout).
+
 The value of argv in process.
 
 Create a js file with following code.
@@ -51,3 +55,29 @@ console.log(sum);
 ```
 
 ## My firsr I/O
+Write a program that uses a single synchronous filesystem operation to read a file and print the number of newlines (\n) it contains to the console (stdout), similar to running cat file | wc -l.  
+   
+The full path to the file to read will be provided as the first command-line argument (i.e., process.argv[2]). You do not need to make your own test file.  
+
+
+```
+var fs = require("fs"); // import file system module
+var argv = process.argv; // get the arguments
+
+var filePath = argv[2]; // get the file Path
+var buf = fs.readFileSync(filePath); // read content from file
+var tmp = buf.toString(); // turn Buffer to String
+var lines = tmp.split("\n"); // split string by "\n"
+
+//for(var i = 0 ; i < lines.length ; i ++){
+//	console.log(lines[i]);
+//}
+
+console.log(lines.length-1); // I do not know why need minius one!!!
+
+```
+
+## My first Aysn I/O
+Write a program that uses a single asynchronous filesystem operation to read a file and print the number of newlines it contains to the console (stdout), similar to running cat file | wc -l.  
+
+The full path to the file to read will be provided as the first command-line argument.  
