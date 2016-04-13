@@ -1,27 +1,18 @@
-var fs = require("fs"); // import file system module
+var fs = require("fs"); // load file system module
+var path = require("path"); // load path module
 var argv = process.argv; // get the arguments
 
-var filePath = argv[2]; // get the file Path
+var dir = argv[2]; // get the dir
+var filtered = argv[3]; // get the filtered type name
 
-/* solution 1: return buffer */
-// fs.readFile(filePath,function countLine(err,data){
-// 	if(err != null){
-// 		console.log("Err in fs.readFile!");
-// 	}else{
-// 		var tmp = data.toString();
-// 		var lines = tmp.split("\n");
-// 		console.log(lines.length-1);
-// 	}
-// });
 
-/* solution 2: return string */
-fs.readFile(filePath,function countLine(err,data){
+fs.readdir(dir, (err,data) => {
 	if(err != null){
-		console.log("Err in fs.readFile!");
+		console.log("Err in fs.readdir!");
 	}else{
-		console.log("Why?");
-		console.log(data);
-		var lines = data.split("\n");
-		console.log(lines.length-1);
+		for(int i = 0 ; i < data.length ; i ++){
+			var file = data[i];
+			var extname = path.extname(file) 
+		}
 	}
-},'utf8');
+});

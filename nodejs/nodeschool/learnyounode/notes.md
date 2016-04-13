@@ -81,3 +81,32 @@ console.log(lines.length-1); // I do not know why need minius one!!!
 Write a program that uses a single asynchronous filesystem operation to read a file and print the number of newlines it contains to the console (stdout), similar to running cat file | wc -l.  
 
 The full path to the file to read will be provided as the first command-line argument.  
+
+```
+var fs = require("fs"); // import file system module
+var argv = process.argv; // get the arguments
+
+var filePath = argv[2]; // get the file Path
+
+/* solution 1: return buffer */
+fs.readFile(filePath,function countLine(err,data){
+	if(err != null){
+		console.log("Err in fs.readFile!");
+	}else{
+		var tmp = data.toString();
+		var lines = tmp.split("\n");
+		console.log(lines.length-1);
+	}
+});
+
+/* solution 2: return string */
+// fs.readFile(filePath,'utf8', function countLine(err,data){
+// 	if(err != null){
+// 		console.log("Err in fs.readFile!");
+// 	}else{
+// 		var lines = data.split("\n");
+// 		console.log(lines.length-1);
+// 	}
+// });
+
+```

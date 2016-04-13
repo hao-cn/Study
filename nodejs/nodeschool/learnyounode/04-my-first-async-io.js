@@ -14,16 +14,12 @@ fs.readFile(filePath,function countLine(err,data){
 	}
 });
 
-/* solution 2: return string
-	does not work!!
- */
-// fs.readFile(filePath,function countLine(err,data){
+/* solution 2: return string */
+// fs.readFile(filePath,'utf8', function countLine(err,data){
 // 	if(err != null){
 // 		console.log("Err in fs.readFile!");
 // 	}else{
-// 		console.log("Why?");
-// 		console.log(data);
 // 		var lines = data.split("\n");
 // 		console.log(lines.length-1);
 // 	}
-// },'utf8');
+// });
