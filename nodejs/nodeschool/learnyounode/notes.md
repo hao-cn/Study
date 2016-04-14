@@ -332,8 +332,6 @@ mymodule.filteredls(process.argv[2],process.argv[3],function (err,list){
 
 ```
 
-<b>Point</b>
-
 + how to export a module
 + how to load your module
 + use callback function as a parameter, and use it when the work has been done
@@ -343,4 +341,42 @@ foreach
 filter
 ``` methods for a list variable.
 
-## 
+
+## Http client
+
+<b>Problem</b>
+
+Write a program that performs an HTTP GET request to a URL provided to you as the first command-line argument. Write the String contents of each "data" event from the response to a new line on the console (stdout). 
+
+<b>Solution</b>
+
+my solution
+
+```
+var http = require("http");
+
+http.get(process.argv[2],function (response){
+		response.on("data", function (data){
+			console.log(data.toString());
+		});
+	} 
+);
+```
+
+expect solution
+
+```
+var http = require('http')  
+http.get(process.argv[2], function (response) {  
+   response.setEncoding('utf8')  
+   response.on('data', console.log)  
+   response.on('error', console.error)       
+})  
+```
+
+<b>Point</b>
+
++ use http module
++ the ```
+respone.on()
+``` method
