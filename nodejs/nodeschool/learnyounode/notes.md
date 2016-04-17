@@ -738,3 +738,145 @@ data
 ``` and ```
 end
 ```
+
+## Http json api server
+
+<b>Problem</b>
+
+Write an HTTP server that serves JSON data when it receives a GET request to the path '/api/parsetime'. Expect the request to contain a query string with a key 'iso' and an ISO-format time as the value.
+
+For example:
+
+    /api/parsetime?iso=2013-08-10T12:10:15.474Z
+
+The JSON response should contain only 'hour', 'minute' and 'second' properties.
+
+For example:
+
+    {
+        "hour": 14,
+        "minute": 23,
+        "second": 15
+    }
+
+Add second endpoint for the path '/api/unixtime'
+which accepts the same query string but returns UNIX epoch time in milliseconds(the number of milliseconds since 1 Jan 1970 00: 00: 00 UTC) under the property 'unixtime'.
+
+For example:
+
+    { "unixtime": 1376136615474 }
+
+Your server should listen on the port provided by the first argument to your program.
+
+<b>Solution</b>
+
+my solution:
+
+```
+var http = require('http');
+var url = require('url');
+
+http.createServer(function(request, respond) {
+	/** request method filter **/
+    if (request.method == 'GET') {
+        respond.writeHead(200, { 'Content-Type': 'application/json' })
+
+        /** get parsed url **/
+        var parsedUrl = url.parse(request.url, true);
+        /** path filter **/
+        if (parsedUrl.pathname == '/api/parsetime' || parsedUrl.pathname == '/api/unixtime') {
+        	/** get result by parsedUrl **/
+        	var result = handle(parsedUrl);
+        	/** write result in JSON formate **/
+            respond.end(JSON.stringify());
+        } else {
+            respond.end('\n')
+        }
+    }
+}).listen(Number(process.argv[2]));
+
+function handle(parsedUrl) {
+    /** parse iso time formate **/
+    var isodate = parsedUrl.query.iso;
+    /** translate ISO formate into unixtime **/
+    var unixtime = Date.parse(isodate);
+
+    /** handle route by path **/
+    if (parsedUrl.pathname == '/api/parsetime') {
+    	/** get detail information about time **/
+    	var date = new Date(unixtime);
+		var hours = date.getHours();
+		var minutes = date.getMinutes();
+		var seconds = date.getSeconds();
+
+        return {
+            "hour": hours,
+            "minute": minutes,
+            "second": seconds
+        }
+    } else {
+        /** get unix time **/
+        return {
+            "unixtime": unixtime
+        }
+    }
+}
+```
+
+expect solution
+
+```
+var http = require('http')
+var url = require('url')
+
+function parsetime(time) {
+    return {
+        hour: time.getHours(),
+        minute: time.getMinutes(),
+        second: time.getSeconds()
+    }
+}
+
+function unixtime(time) {
+    return { unixtime: time.getTime() }
+}
+
+var server = http.createServer(function(req, res) {
+    var parsedUrl = url.parse(req.url, true)
+    var time = new Date(parsedUrl.query.iso)
+    var result
+
+    if (/^\/api\/parsetime/.test(req.url))
+        result = parsetime(time)
+    else if (/^\/api\/unixtime/.test(req.url))
+        result = unixtaime(time)
+
+    if (result) {
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify(result))
+    } else {
+        res.writeHead(404)
+        res.end()
+    }
+})
+server.listen(Number(process.argv[2]))
+```
+
+<b>Point</b>
+
++ how to return json data by respond
+	1. construct json data by
+	```
+		{
+			"key1" : value1,
+			"key2" : value2,
+			...,
+			"keyn" : valuen
+		}
+   ```
+	
+	2. write json into respond with json formate by following code ```
+	JSON.stringify(jsonData)
+```
+
++ ISO formate time and Unix time
