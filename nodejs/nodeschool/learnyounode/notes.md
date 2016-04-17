@@ -523,4 +523,218 @@ for (var i = 0; i < 3; i++)
 
 <b>Point</b>
 
-+ 
++ how to control the flow of program even with async method
+
+
+## Time server
+
+<b>Problem</b>
+
+Write a TCP time server!  
+   
+Your server should listen to TCP connections on the port provided by the first argument to your program. For each connection you must write the current date & 24 hour time in the format:  
+   
+     "YYYY-MM-DD hh:mm"  
+     
+followed by a newline character. Month, day, hour and minute must be zero-filled to 2 integers. For example:  
+   
+     "2013-07-06 17:42"  
+   
+After sending the string, close the connection.  
+   
+
+<b>Solution</b>
+
+my solution 1:
+
+main file, but did ont pass the verification,
+since this code present the result by http rather than socket.
+
+```
+var http = require("http");
+var nowdate = require("./1001-nowdate.js");
+
+http.createServer(function(req, res){
+	res.writeHead(200, {'Content-type' : 'text/html'});
+	res.write(nowdate.getNowFormatDate());
+	res.end();
+}).listen(Number(process.argv[2]));	
+```
+
+method to get current date:
+
+```
+/** 1001-nowdate.js **/
+function getNowFormatDate() {
+	/** get value **/
+    var date = new Date();
+    var year = date.getFullYear(); 
+    var month = date.getMonth() + 1; // start from 0
+    var day = date.getDate(); 
+
+    var hour = date.getHours();
+    var minutes = date.getMinutes();
+
+    var first = year + "-" + format(month) + "-" + format(day);
+    var second = format(hour) + ":" + format(minutes);
+
+    return first + " " + second;
+}
+
+function format(value){
+    return (value < 10 ? "0" : "") + value;
+}
+
+exports.getNowFormatDate = getNowFormatDate;
+
+```
+
+my solution 2:
+
+```
+var net = require("net");
+var nowdate = require("./1001-nowdate.js");
+
+net.createServer(function(socket){
+	/** method 1 **/
+	// socket.write(nowdate.getNowFormatDate()+"\n");
+	// socket.end();
+
+	/** method 2 **/
+	socket.end(nowdate.getNowFormatDate()+"\n");
+
+}).listen(Number(process.argv[2]));	
+```
+
+expect solution:
+
+```
+var net = require('net')  
+       
+function zeroFill(i) {    
+	return (i < 10 ? '0' : '') + i  
+}  
+       
+function now () {  
+	var d = new Date()  
+   return d.getFullYear() + '-'  
+   		+ zeroFill(d.getMonth() + 1) + '-'  
+       + zeroFill(d.getDate()) + ' '  
+       + zeroFill(d.getHours()) + ':'  
+       + zeroFill(d.getMinutes())  
+}  
+       
+var server = net.createServer(function (socket) {  
+	socket.end(now() + '\n')  
+})  
+       
+server.listen(Number(process.argv[2]))  
+```
+
+<b>Point</b>
+
++ net module and create sever
++ date module and get value
+
+
+## Http file server
+
+<b>Problem</b>
+
+Write an HTTP server that serves the same text file for each request it receives.  
+   
+Your server should listen on the port provided by the first argument to your program.  
+   
+You will be provided with the location of the file to serve as the second command-line argument. You must use the fs.createReadStream() method to stream the file contents to the response.
+
+<b>Solution</b>
+
+my solution
+
+```
+var http = require("http");
+var fs = require("fs");
+
+http.createServer(function(request, response){
+	/** create src stream **/
+	var src = fs.createReadStream(process.argv[3]);
+
+	/** output the file thought pipe **/
+	src.pipe(response);
+}).listen(Number(process.argv[2]));	
+```
+
+<b>Point</b>
+
++ http module and create server
++ request, response and file stream all are stream object, and how to use pipe ```
+src.pipe(dst); // pipe content from src stream into dst stream
+```
+
+## Http Uppercaser
+
+<b>Problem</b>
+
+Write an HTTP server that receives only POST requests and converts incoming POST body characters to upper-case and returns it to the client.  
+   
+Your server should listen on the port provided by the first argument to your program
+
+<b>Solution</b>
+
+my solution
+
+```
+var http = require("http");
+var fs = require("fs");
+
+http.createServer(function(request, response){
+	if (request.method != 'POST') return request.end('send me a POST\n');
+
+	/** receive data chunk **/
+	var postData = "";
+	request.addListener("data", function (postDataChunk) {
+        postData += postDataChunk;
+    });
+    /** respond when received all data by translate data to string and using toUpperCase function **/
+	request.addListener("end", function (postDataChunk) {
+		response.write(postData.toString().toUpperCase());
+        response.end();
+    });
+
+}).listen(Number(process.argv[2]));	
+```
+
+expect solution
+
+```
+var http = require('http')
+var map = require('through2-map')
+
+var server = http.createServer(function(req, res) {
+    if (req.method != 'POST')
+        return res.end('send me a POST\n')
+
+    req.pipe(map(function(chunk) {
+        return chunk.toString().toUpperCase()
+    })).pipe(res)
+})
+
+server.listen(Number(process.argv[2]))
+```
+
+<b>Point</b>
+
++ get the method of request, there are only two methods ```
+POST
+``` and ```
+GET
+```
++ a package named 
+```
+through2-map
+```
++ add listener to request when two action are activated ```
+data
+``` and ```
+end
+```
