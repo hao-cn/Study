@@ -22,3 +22,7 @@ Create a GitHub account, add username to your Git config.
 
 ## Remote control
 Connect your local and remote repositories and push changes.
+
+## Fork 
+Fork a project from GitHub.com and clone it locally.
+  
