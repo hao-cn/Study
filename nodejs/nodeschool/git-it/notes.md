@@ -19,3 +19,6 @@ Create a file in your new repository, add something to that file and commit thos
 
 ## GithubBin
 Create a GitHub account, add username to your Git config.
+
+## Remote control
+Connect your local and remote repositories and push changes.
