@@ -17,3 +17,5 @@ Create a new Git repository on your computer.
 ## Commit
 Create a file in your new repository, add something to that file and commit those changes to Git.
 
+## GithubBin
+Create a GitHub account, add username to your Git config.
