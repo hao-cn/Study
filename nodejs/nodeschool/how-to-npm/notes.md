@@ -127,3 +127,17 @@ You can edit your package.json file by hand, or run `npm init` again.
 <b>Point</b>
 
 + polished the package.json file
+
+## Publish
+What good is a package manager without packages?
+
+Not very good.
+
+Luckily, that is not a problem for npm, because it's very easy for all npm users to publish their modules and share them with the world.
+
+Packages get into the registry by using the `npm publish` command.
+
+Try it now.  There's not much too it.
+
+(Make sure you're still in the right project directory, though. If you publish something by mistake, you can remove it, but there's no guarantee that no one saw it in the meantime.)
+
