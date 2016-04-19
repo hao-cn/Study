@@ -37,5 +37,8 @@ Keep your file up to date by pulling in changes from collaborators.
 
 ## Requesting you pull, please
 Submit a Pull Request on the original Patchwork repository.
+
+## Megre tada
+Merge your branch locally, delete old branch and pull  from upstream for much win!
  
 
