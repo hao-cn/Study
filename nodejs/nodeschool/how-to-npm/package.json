@@ -1,5 +1,5 @@
 {
-  "name": "test",
+  "name": "test_19910113",
   "version": "1.0.1",
   "description": "Test how to generate json file for npm",
   "main": "index.js",
@@ -13,7 +13,7 @@
   "keywords": [
     "Test"
   ],
-  "author": "Hyang",
+  "author": "hyang",
   "license": "MIT",
   "dependencies": {
     "@linclark/pkg": "^1.0.2"
