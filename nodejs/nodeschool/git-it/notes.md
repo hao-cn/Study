@@ -26,3 +26,16 @@ Connect your local and remote repositories and push changes.
 ## Fork 
 Fork a project from GitHub.com and clone it locally.
   
+## Branches aren't just for birds
+Create a new branch on your fork for your contribution.
+
+## It is a small world
+Add a collaborator to your project.
+
+## Pull, nerver out of date
+Keep your file up to date by pulling in changes from collaborators.
+
+## Requesting you pull, please
+Submit a Pull Request on the original Patchwork repository.
+ 
+
