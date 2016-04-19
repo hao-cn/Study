@@ -1,6 +1,6 @@
 {
   "name": "test",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "description": "Test how to generate json file for npm",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "null"
+    "url": "noname.github.com"
   },
   "keywords": [
     "Test"
