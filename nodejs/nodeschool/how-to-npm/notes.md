@@ -179,3 +179,33 @@ Don't worry, there's a lot of integers, we probably won't run out.
 Publishing something once is fine.  But healthy packages get published again and again with new and exciting bug fixes.
 
 You can't re-use the same version number again, because that's hella confusing for all the robots running the treadmills that power the npm registry.  But, now that we changed the version number in the last exercise, you can publish the package again.
+
+## Dist tag
+Every published package on npm has a `dist-tags` entry on it which maps strings like "latest" to version numbers like "1.2.48".
+
+By default, the "latest" version is what gets installed. When you publish, the version that you publish gets tagged as "latest". This is generally great, because most of the time you publish things when
+you're ready for users to use them.
+
+However, if you need to publish something, and *not* make it the default version of a package (for example, if it's a security release for a legacy version, or something), then you can manually manage these distribution tags with the `dist-tag` function.
+
+Run `npm help dist-tag` to learn more about it.
+
+## Dist tag removal
+Now that you've added a dist-tag or two, let's clean things up.
+
+The only dist-tag you CAN'T ever remove is "latest".  That's because every package installs it's "latest" tag by default, so that tag has some special semantics.
+
+You CAN point "latest" to a different version, or delete other tags.
+
+Let's delete all the tags that we can, and also point "latest" at something other than the most recent release.
+
+## Outdated
+Now that we have some dependencies, and you've learned that your own packages can be updated repeatedly, the obvious question is: What do we do when someone *else* updates *their* package?
+
+The first step is to detect this.  Because of the way that we define our dependencies with a version range, and each release is a unique combination of a name and a version, we can detect compatible releases programmatically with the `npm outdated` command.
+
+To pass this challenge, run `how-to-npm verify PKG` where `PKG` is the name of the package that is out of date.
+
+<b>Point</b>
+
++ get the pkg which is out of dated by `npm outdated`

@@ -1,6 +1,6 @@
 {
   "name": "test_19910113",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Test how to generate json file for npm",
   "main": "index.js",
   "scripts": {
@@ -17,5 +17,6 @@
   "license": "MIT",
   "dependencies": {
     "@linclark/pkg": "^1.0.2"
-  }
+  },
+  "devDependencies": {}
 }
