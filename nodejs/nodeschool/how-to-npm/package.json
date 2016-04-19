@@ -4,7 +4,7 @@
   "description": "Test how to generate json file for npm",
   "main": "index.js",
   "scripts": {
-    "test": "verify"
+    "test": "node test.js"
   },
   "repository": {
     "type": "git",

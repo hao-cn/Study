@@ -81,3 +81,31 @@ update your package.json file at the same time.
 
 (Another option is to just edit package.json yourself in a text editor)
 ```
+
+## npm test
+Now you've installed something, and used `npm ls` to show what's going on.
+
+If you look at the package.json file, it has this rather odd bit in it:
+
+`
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+`
+
+npm can be used as a task runner, and almost every module and project will have a test script that runs to make sure everything is good. In order to help remind you to do this, npm puts a "always failing" test in there by default.
+
+First, create a file called `test.js`.  It doesn't have to do anything, really.  (This is npm class, not testing class.)  But it has to exit without throwing an error, or else the test fails.
+
+Then, edit your `package.json` file to make your scripts section look like
+this instead:
+
+  "scripts": {
+    "test": "node test.js"
+  },
+
+<b>Point</b>
+
++ There is not a default test file
++ create test file and tell the npm in the package.json file
+
