@@ -14,5 +14,8 @@
     "Test"
   ],
   "author": "Hyang",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@linclark/pkg": "^1.0.2"
+  }
 }

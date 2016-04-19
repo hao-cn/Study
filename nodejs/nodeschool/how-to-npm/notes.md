@@ -51,3 +51,33 @@ Let's start out by installing the "@linclark/pkg" module.
 <b>Point</b>
 
 + `npm install <modulename>`
+
+## Listing dependencies
+npm isn't just for installing stuff.  It also shows you what you have installed.
+
+You can do this using the `npm ls` command.
+
+Run this command in your working dir, and then run `how-to-npm verify OK` if everything looks ok, or `how-to-npm verify NOT OK` if there was a problem.
+
+<b>Point</b>
+
+```
+Indeed, not all is well here in dep-land.
+
+Your dependencies should be listed in the package.json file in an
+object called 'dependencies'.  However, when we installed '@linclark/pkg',
+we didn't update the package.json file to list out this dependency.
+
+So, it shows up as 'extraneous', warning us that we have something
+there that we haven't listed as a dependency.
+
+The easiest way to avoid this situation is to use the `--save` flag
+when installing dependencies.  You might not want to do this with
+things that you're just trying out, but when you decide on something,
+you can use this flag to update your package.json file easily.
+
+Try running `npm install @linclark/pkg --save` to install the module, and also
+update your package.json file at the same time.
+
+(Another option is to just edit package.json yourself in a text editor)
+```
