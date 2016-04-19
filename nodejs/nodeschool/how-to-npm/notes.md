@@ -237,3 +237,9 @@ Just like you can use `--save` on installing packages, you can also use `--save`
 <b>Point</b>
 
 + `npm rm pkgname --save` or `npm uninstall pkgname --save`
+
+## Finale
+It's almost time to say goodbye.  But don't worry!  This is just an introduction.  If you've finished all the other exercises, then run `how-to-npm verify` to learn about the next steps beyond this little adventure.
+
+
+END.
