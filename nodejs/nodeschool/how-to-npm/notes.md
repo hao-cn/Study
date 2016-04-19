@@ -36,3 +36,18 @@ Run `npm init --scope=<username>`, and replace <username> with the user you crea
 <b>Point</b>
 
 + `npm init --scope=<username>`
+
+## Install a module
+The first thing that most people do with npm is install a dependency.
+
+Dependencies are fetched from the registry, and unpacked in the `node_modules` folder.
+
+To install a module, use the `npm install <modulename>` command.
+
+The registry that we're using for this tutorial is a tiny version of the one at https://registry.npmjs.org. So you might find that it only has a small number of things.
+
+Let's start out by installing the "@linclark/pkg" module.
+
+<b>Point</b>
+
++ `npm install <modulename>`
