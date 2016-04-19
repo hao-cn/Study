@@ -36,4 +36,22 @@ fs.createReadStream(input).pipe(process.stdout);
 
 + use `use.createReadStream` to create stream object from file
 + use `src.pipe(dst)` method to pipe content from src to dst
++ `process.stdout` the standard output, stream object
++ `process.stdout` the standard error output, stream object
 
+## Input and output
+Take data from `process.stdin` and pipe it to `process.stdout`.
+
+With `.pipe()`. `process.stdin.pipe()` to be exact.
+
+Don't overthink this.
+
+<b>My solution</b>
+
+```
+process.stdin.pipe(process.stdout);
+```
+
+<b>Point</b>
+
++ `process.stdin` the standard input, stream object
