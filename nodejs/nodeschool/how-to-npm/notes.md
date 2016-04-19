@@ -61,6 +61,8 @@ Run this command in your working dir, and then run `how-to-npm verify OK` if eve
 
 <b>Point</b>
 
++ `npm install pkgname --save` to install module and update the json file
+
 ```
 Indeed, not all is well here in dep-land.
 
@@ -209,3 +211,29 @@ To pass this challenge, run `how-to-npm verify PKG` where `PKG` is the name of t
 <b>Point</b>
 
 + get the pkg which is out of dated by `npm outdated`
+
+## Update
+It's fine, of course, to explicitly check for outdated modules, and then run `npm install` to pull them in.
+
+However, if you want to be a bit more lazy about it, there's a special npm command that will UPDATE all of your deps to the max version you allow in your package.json.
+
+Can you guess what command that might be?  (`npm help` might help you)
+
+Update all your deps to the latest version possible, and then run `how-to-npm verify` to pick up your delicious green banner.
+
+<b>Point</b>
+
++ update all package by `npm update`
+
+## RM
+If you have a way to put stuff there, then naturally, you'll one day need a way to delete them.
+
+Enter the `npm rm` command (aka `npm uninstall` if you prefer to type things out long-hand).
+
+Remove all the deps!  But, make sure that you don't keep depending on them.
+
+Just like you can use `--save` on installing packages, you can also use `--save` when removing packages, to also remove them from your package.json file.
+
+<b>Point</b>
+
++ `npm rm pkgname --save` or `npm uninstall pkgname --save`
