@@ -175,4 +175,7 @@ Don't worry, there's a lot of integers, we probably won't run out.
 	1. By hand in package.json
 	2. `npm version`
 
-## 
+## Publish again
+Publishing something once is fine.  But healthy packages get published again and again with new and exciting bug fixes.
+
+You can't re-use the same version number again, because that's hella confusing for all the robots running the treadmills that power the npm registry.  But, now that we changed the version number in the last exercise, you can publish the package again.

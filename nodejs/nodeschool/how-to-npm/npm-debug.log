@@ -1,0 +1,52 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node',
+1 verbose cli   '/Users/hyang/.nvm/versions/node/v0.12.11/bin/npm',
+1 verbose cli   'adduser' ]
+2 info using npm@3.8.6
+3 info using node@v0.12.11
+4 verbose adduser before first PUT { _id: 'org.couchdb.user:hyang',
+4 verbose adduser   name: 'hyang',
+4 verbose adduser   password: 'XXXXX',
+4 verbose adduser   email: 'hyang.cn@outlook.com',
+4 verbose adduser   type: 'user',
+4 verbose adduser   roles: [],
+4 verbose adduser   date: '2016-04-19T05:56:18.543Z' }
+5 verbose request uri http://localhost:15443/-/user/org.couchdb.user:hyang
+6 verbose request new user, so can't send auth
+7 info attempt registry request try #1 at 1:56:18 PM
+8 verbose request id c48a64091f1dfb08
+9 http request PUT http://localhost:15443/-/user/org.couchdb.user:hyang
+10 info retry will retry, error on last attempt: Error: socket hang up
+11 info attempt registry request try #2 at 1:56:28 PM
+12 http request PUT http://localhost:15443/-/user/org.couchdb.user:hyang
+13 info retry will retry, error on last attempt: Error: connect ECONNREFUSED
+14 info attempt registry request try #3 at 1:57:28 PM
+15 http request PUT http://localhost:15443/-/user/org.couchdb.user:hyang
+16 verbose request invalidating /Users/hyang/.npm/localhost_15443/-/user/org.couchdb.user_3Ahyang on PUT
+17 verbose adduser back [ { [Error: connect ECONNREFUSED]
+17 verbose adduser     code: 'ECONNREFUSED',
+17 verbose adduser     errno: 'ECONNREFUSED',
+17 verbose adduser     syscall: 'connect' },
+17 verbose adduser   undefined,
+17 verbose adduser   undefined ]
+18 verbose stack Error: connect ECONNREFUSED
+18 verbose stack     at exports._errnoException (util.js:746:11)
+18 verbose stack     at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1012:19)
+19 verbose cwd /Users/hyang/Documents/workspace/Study/nodejs/nodeschool/how-to-npm
+20 error Darwin 15.4.0
+21 error argv "node" "/Users/hyang/.nvm/versions/node/v0.12.11/bin/npm" "adduser"
+22 error node v0.12.11
+23 error npm  v3.8.6
+24 error code ECONNREFUSED
+25 error errno ECONNREFUSED
+26 error syscall connect
+27 error Error: connect ECONNREFUSED
+27 error     at exports._errnoException (util.js:746:11)
+27 error     at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1012:19)
+27 error  { [Error: connect ECONNREFUSED]
+27 error   code: 'ECONNREFUSED',
+27 error   errno: 'ECONNREFUSED',
+27 error   syscall: 'connect' }
+28 error If you are behind a proxy, please make sure that the
+28 error 'proxy' config is set properly.  See: 'npm help config'
+29 verbose exit [ 1, true ]
