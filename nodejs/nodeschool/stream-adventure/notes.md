@@ -210,3 +210,56 @@ process.stdin.pipe(split()).pipe(stream).pipe(process.stdout);
 + use split module to get splited buffers
 + use global variable to count the number
 
+## Concat
+
+You will be given text on process.stdin. Buffer the text and reverse it using sthe `concat-stream` module before writing it to stdout.
+
+`concat-stream` is a write stream that you can pass a callback to get the complete contents of a stream as a single buffer. Here's an example that uses
+concat to buffer POST content in order to JSON.parse() the submitted data:
+
+    var concat = require('concat-stream');
+    var http = require('http');
+    
+    var server = http.createServer(function (req, res) {
+        if (req.method === 'POST') {
+            req.pipe(concat(function (body) {
+                var obj = JSON.parse(body);
+                res.end(Object.keys(obj).join('\n'));
+            }));
+        }
+        else res.end();
+    });
+    server.listen(5000);
+
+In your adventure you'll only need to buffer input with `concat()` from process.stdin.
+
+Make sure to `npm install concat-stream` in the directory where your solution file is located.
+
+<b>My solution</b>
+
+```
+var concat = require("concat-stream");
+process.stdin.pipe(concat(function(body) {
+	var content = body.toString();
+    var array = content.split("");
+    var rarray = array.reverse();
+    process.stdout.write(rarray.join(""));
+}));
+```	
+
+<b>Point</b>
+
++ string 2 array
+	```
+	var array = str.split("");
+	```
++ array 2 string
+   ```
+	var str = array.join("");
+	```
++ reverse a array
+   ```
+	var reverse = array.reverse();
+	```
++ concat module 
+
