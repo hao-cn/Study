@@ -210,7 +210,7 @@ process.stdin.pipe(split()).pipe(stream).pipe(process.stdout);
 + use split module to get splited buffers
 + use global variable to count the number
 
-## Concat
+## 6 Concat
 
 You will be given text on process.stdin. Buffer the text and reverse it using sthe `concat-stream` module before writing it to stdout.
 
@@ -263,7 +263,7 @@ process.stdin.pipe(concat(function(body) {
 	```
 + concat module 
 
-## Http server
+## 7 Http server
 In this challenge, write an http server that uses a through stream to write back the request stream as upper-cased response data for POST requests.
 
 Streams aren't just for text files and stdin/stdout. Did you know that http request and response objects from node core's `http.createServer()` handler are
@@ -339,7 +339,7 @@ http.createServer(function listener(request, respond) {
 + how to create http server
 
 
-## Http client
+## 8 Http client
 Send an HTTP POST request to http://localhost:8099 and pipe process.stdin into it. Pipe the response stream to process.stdout.
 
 Here's an example of how to use the `request` module to send a GET request, piping the result to stdout:
@@ -374,4 +374,26 @@ process.stdin.pipe(request.post("http://localhost:8099")).pipe(process.stdout);
 
 + how to send a request 
 
+## 9 Websocket
+In this adventure, write some browser code that uses the websocket-stream module to print the string "hello\n".
 
+Your solution file will be compiled with browserify and the verify script will prompt you to open `http://localhost:8099` in a browser to verify your solution.
+
+To open a stream with websocket-stream on localhost:8099, just write:
+
+    var ws = require('websocket-stream');
+    var stream = ws('ws://localhost:8099');
+   
+Then write the string "hello\n" to the stream.
+
+The readme for websocket-stream has more info if you're curious about how to write the server side code: https://github.com/maxogden/websocket-stream
+
+Make sure to `npm install websocket-stream` in the directory where your solution file lives.
+
+<b>My solution</b>
+
+```
+var ws = require('websocket-stream');
+var stream = ws('ws://localhost:8099');
+stream.write('hello\n');
+```
