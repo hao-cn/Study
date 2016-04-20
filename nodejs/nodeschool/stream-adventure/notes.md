@@ -39,7 +39,7 @@ fs.createReadStream(input).pipe(process.stdout);
 + `process.stdout` the standard output, stream object
 + `process.stdout` the standard error output, stream object
 
-## Input and output
+## 3 Input and output
 Take data from `process.stdin` and pipe it to `process.stdout`.
 
 With `.pipe()`. `process.stdin.pipe()` to be exact.
@@ -56,7 +56,7 @@ process.stdin.pipe(process.stdout);
 
 + `process.stdin` the standard input, stream object
 
-## Transform
+## 4 Transform
 Convert data from `process.stdin` to upper-case data on `process.stdout` using the `through2` module.
 
 To get the `through2` module you'll need to do:
@@ -126,3 +126,87 @@ var stream = through(
 
 process.stdin.pipe(stream).pipe(process.stdout)
 ```
+
+## 5 Lines
+Instead of transforming every line as in the previous "TRANSFORM" example, for this challenge, convert even-numbered lines to upper-case and odd-numbered lines to lower-case. Consider the first line to be odd-numbered. For example given this input:
+
+    One
+    Two
+    Three
+    Four
+
+Your program should output:
+
+    one
+    TWO
+    three
+    FOUR
+
+You can use the `split` module to split input by newlines. For example:
+
+    var split = require('split');
+    process.stdin
+        .pipe(split())
+        .pipe(through2(function (line, _, next) {
+            console.dir(line.toString());
+            next();
+        }))
+    ;
+
+`split` will buffer chunks on newlines before you get them. In the previous example, we will get separate events for each line even though all the data
+probably arrives on the same chunk:
+
+    $ echo -e 'one\ntwo\nthree' | node split.js
+    'one'
+    'two'
+    'three'
+
+Your own program should use `split` in this way, but you should transform the input and pipe the output through to `process.stdout`.
+
+Make sure to `npm install split through2` in the directory where your solution file lives.
+
+<b>My solution</b>
+
+```
+var through = require("through2")
+var count = 0;
+var stream = through(
+	function (buffer, encoding, next) {
+		var lines = buffer.toString().split("\n");
+		for(var i = 0 ; i < lines.length - 1 ; i ++){
+			if(count % 2 == 0)
+	        	this.push(lines[i].toLowerCase()+"\n");
+	        else
+	        	this.push(lines[i].toUpperCase()+"\n");
+	        count ++
+		}
+        next();
+    }
+)
+process.stdin.pipe(stream).pipe(process.stdout);
+```
+
+<b>Expect solution</b>
+
+```
+var through = require("through2")
+var split = require("split")
+var count = 0;
+var stream = through(
+    function(buffer, encoding, next) {
+        if (count % 2 == 0)
+            this.push(buffer.toString().toLowerCase() + "\n");
+        else
+            this.push(buffer.toString().toUpperCase() + "\n");
+        count++
+        next();
+    }
+)
+process.stdin.pipe(split()).pipe(stream).pipe(process.stdout);
+```
+
+<b>Point</b>
+
++ use split module to get splited buffers
++ use global variable to count the number
+
