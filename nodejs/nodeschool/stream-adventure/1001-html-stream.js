@@ -7,6 +7,3 @@ loud.pipe(through(function (buffer, encoding, next) {
 	next();
 })).pipe(loud);
 process.stdin.pipe(tr).pipe(process.stdout);
-
-// stream.pipe().pipe(stream);
-// stream.pipe(process.stdout);
