@@ -11,7 +11,7 @@ var stream = through(
 	        	this.push(lines[i].toUpperCase()+"\n");
 	        count ++
 		}
-        next();
+        next();	
     }
 )
 
